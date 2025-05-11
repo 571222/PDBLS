@@ -1,5 +1,5 @@
 
-# Weight matrices compression based on PDB model in deep neural networks
+# Weight matrices compression based on PDB model in deep neural networks [ICML 2025]
 
 
 ### Abstract
