@@ -24,23 +24,24 @@ def removebike(N,labda,p): # Initially estimate the number of spikes
 
 model_name='MLP'
 data_name='mnist'
+total_layer=4
 for noise in [0.0]:
 
     NN_1024 = neural.NNModel(path=f'./model_{model_name}_{data_name}_noise{noise}',
                                     datasets=neural.get_mnist_fc_std(noise), batch_size=128)
     
-    svd=[np.linalg.svd(NN_1024.get_weight(layer_index=i), full_matrices=False) for i in range(3)]
+    svd=[np.linalg.svd(NN_1024.get_weight(layer_index=i), full_matrices=False) for i in range(total_layer-1)]
     svd_value=[s[1] for s in svd]
     tzz_value=[s**2 for s in svd_value]
-    p=[min(NN_1024.get_weight(layer_index=i).shape) for i in range(3)] 
-    N=[max(NN_1024.get_weight(layer_index=i).shape) for i in range(3)] 
+    p=[min(NN_1024.get_weight(layer_index=i).shape) for i in range(total_layer-1)] 
+    N=[max(NN_1024.get_weight(layer_index=i).shape) for i in range(total_layer-1)] 
     C=np.array(p)/np.array(N)
     
     result=dict()
     result['K'],result['t1'],result['delta1'],result['delta2']=[],[],[],[] #store parameters K0,t1,delta1,delta2
     density=dict()
     
-    for i in range(3):
+    for i in range(total_layer-1):
         EDA1, EDB1 = removebike(N[i], tzz_value[i], p[i])
         k_EDA1 = np.argmin(EDA1) + 1
         k_EDB1 = np.argmin(EDB1) + 1
